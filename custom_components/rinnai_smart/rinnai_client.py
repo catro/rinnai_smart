@@ -38,7 +38,7 @@ class HTTPClient:
         return True
 
     async def _get_devices(self):
-        headers = {"Authorization": f"Bearer {self._token}"}
+        headers = {"Authorization": f"Basic {self._token}"}
         return await self._get_url("/app/V1/device/list", headers=headers)
 
     async def get_devices(self) -> list[dict] | None:
@@ -66,7 +66,7 @@ class HTTPClient:
         return devices_info
 
     async def _get_device_information(self, device_id: str):
-        headers = {"Authorization": f"Bearer {self._token}"}
+        headers = {"Authorization": f"Basic {self._token}"}
         params = {"deviceId": device_id}
         return await self._get_url(
             "/app/V1/device/processParameter", headers=headers, params=params
@@ -198,9 +198,9 @@ class RinnaiClient:
         MAX_BACKOFF = 3600
         NEED_BACKOFF_SECONDS = datetime.timedelta(seconds=60)
         backoff = BACKOFF_INIT
-        now = datetime.datetime.now()
         subscribes = []
         while True:
+            now = datetime.datetime.now()
             try:
                 LOGGER.info("Trying to connect to MQTT server...")
                 await self._mqtt_client.run(ssl_context, subscribes)
