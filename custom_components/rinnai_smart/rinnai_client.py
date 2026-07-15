@@ -75,7 +75,13 @@ class HTTPClient:
     @backoff.on_exception(backoff.expo, aiohttp.ClientError, max_time=60)
     async def _get_url(self, url, **kwargs):
         async with aiohttp.ClientSession(
-            base_url="https://iot.rinnai.com.cn", raise_for_status=True
+            base_url="https://iot.rinnai.com.cn",
+            raise_for_status=True,
+            # iot.rinnai.com.cn is fronted by Aliyun WAF which returns an HTML
+            # challenge page (HTTP 200, text/html) for aiohttp's default
+            # User-Agent, breaking JSON parsing and setup (issue #14). Any
+            # ordinary UA (browser / okhttp / curl) is served JSON normally.
+            headers={"User-Agent": "okhttp/3.12.1"},
         ) as session:
             async with session.get(url, **kwargs) as response:
                 return await response.json()
