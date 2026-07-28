@@ -213,7 +213,10 @@ class RinnaiClient:
             except Exception as e:
                 LOGGER.error(f"MQTT connection error: {e}")
             if datetime.datetime.now() - now < NEED_BACKOFF_SECONDS:
-                await self.get_devices()
+                try:
+                    await self.get_devices()
+                except Exception as e:
+                    LOGGER.error(f"Failed to refresh devices, will retry: {e}")
                 backoff = backoff << 1
                 if backoff > MAX_BACKOFF:
                     backoff = MAX_BACKOFF
