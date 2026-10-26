@@ -12,8 +12,17 @@ import re
 logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger(__package__)
 
+class RinnaiError(Exception):
+    """The cloud API did not return a usable response."""
+
+
+class AuthenticationError(RinnaiError):
+    """The cloud API rejected the account credentials."""
+
+
 class HTTPClient:
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str, device_filter=None):
+        self._device_filter = device_filter
         self._username = username
         self._password = str.upper(hashlib.md5(password.encode("utf-8")).hexdigest())
         self._token = ""
@@ -29,31 +38,43 @@ class HTTPClient:
             "identityLevel": "0",
         }
         response = await self._get_url("/app/V1/login", params=params)
-        if response.get("success") == False:
-            LOGGER.error(f"Failed to login: {response}")
+        if response.get("success") is not True:
+            LOGGER.error("Failed to log in to Rinnai")
             return False
 
         LOGGER.info("Successfully logged in")
-        self._token = response.get("data").get("token")
+        self._token = (response.get("data") or {}).get("token")
+        if not self._token:
+            raise RinnaiError("Missing authentication token")
         return True
 
     async def _get_devices(self):
         headers = {"Authorization": f"Basic {self._token}"}
         return await self._get_url("/app/V1/device/list", headers=headers)
 
-    async def get_devices(self) -> list[dict] | None:
-        if self._token == "":
-            await self.login()
-
+    async def get_device_list(self) -> list[dict]:
+        """Fetch account device names without requesting state or connecting MQTT."""
+        if not self._token and not await self.login():
+            raise AuthenticationError
         response = await self._get_devices()
-        if response.get("success") == False:
-            LOGGER.error(f"Failed to get devices: {response}")
-            await self.login()
+        if response.get("success") is not True:
+            if not await self.login():
+                raise AuthenticationError
             response = await self._get_devices()
-        devices = response.get("data", {}).get("list")
+        devices = (response.get("data") or {}).get("list")
+        if response.get("success") is not True or not isinstance(devices, list):
+            raise RinnaiError("Unable to list devices")
+        if any(not isinstance(device, dict) or not isinstance(device.get("id"), str)
+               for device in devices):
+            raise RinnaiError("Invalid device list")
+        return devices
 
+    async def get_devices(self) -> dict:
+        devices = await self.get_device_list()
         devices_info = {}
         for device in devices:
+            if self._device_filter is not None and not self._device_filter(device["id"]):
+                continue
             response = await self._get_device_information(device["id"])
             if response.get("success") == False:
                 LOGGER.error(f"Failed to get device information: {response}")
@@ -138,10 +159,10 @@ class MQTTClient:
 
 
 class RinnaiClient:
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str, device_filter=None):
         self._username = username
         self._password = password
-        self._http_client = HTTPClient(self._username, self._password)
+        self._http_client = HTTPClient(self._username, self._password, device_filter)
         self._mqtt_client = MQTTClient(username, password, self._on_message)
         self._devices = {}
         self._subscribes = {}

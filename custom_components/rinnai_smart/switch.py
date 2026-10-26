@@ -5,6 +5,7 @@ from homeassistant.components.switch import SwitchEntity
 from .const import DOMAIN as RINNAI_DOMAIN, SWITCHES
 from .device import RinnaiDeviceDataUpdateCoordinator
 from .entity import RinnaiEntity
+from .filters import entity_selected
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -13,7 +14,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]["devices"]
     entities = []
     for device in devices:
-        entities.extend([RinnaiSwitch(switch, device) for switch in SWITCHES])
+        entities.extend(
+            RinnaiSwitch(switch, device) for switch in SWITCHES
+            if entity_selected(config_entry.options, device.id, switch["entity_type"])
+        )
     async_add_entities(entities)
 
 

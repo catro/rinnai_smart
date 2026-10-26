@@ -11,6 +11,7 @@ from homeassistant.const import UnitOfTemperature
 from .const import DOMAIN, OPERATION_MAP, WATER_HEATER, MIN_TEMP, MAX_TEMP, LOGGER
 from .device import RinnaiDeviceDataUpdateCoordinator
 from .entity import RinnaiEntity
+from .filters import entity_selected
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -20,7 +21,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]["devices"]
     entities = []
     for device in devices:
-        entities.append(RinnaiWaterHeater(device))
+        if entity_selected(config_entry.options, device.id, "water_heater"):
+            entities.append(RinnaiWaterHeater(device))
     async_add_entities(entities)
 
 

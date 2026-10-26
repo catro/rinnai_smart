@@ -1,20 +1,72 @@
 {
-    "config": {
-        "abort": {
-            "already_configured": "Device is already configured"
-        },
-        "error": {
-            "cannot_connect": "Failed to connect",
-            "invalid_auth": "Invalid authentication",
-            "unknown": "Unexpected error"
-        },
-        "step": {
-            "user": {
-                "data": {
-                    "password": "Password",
-                    "username": "Username"
-                }
-            }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Log in to Rinnai Smart",
+        "data": {
+          "username": "Username",
+          "password": "Password"
         }
+      },
+      "devices": {
+        "title": "Select devices",
+        "description": "Include imports only the checked devices. Exclude imports every device except the checked ones, including devices added to the account later. An empty Include list imports nothing; an empty Exclude list imports everything.",
+        "data": {
+          "device_filter_mode": "Device filter mode",
+          "device_ids": "Devices"
+        }
+      },
+      "entities": {
+        "title": "Select entities",
+        "description": "Choose individual functions for the selected devices. Include imports only checked entities; Exclude imports all except checked entities. Empty Include means none; empty Exclude means all. Saved choices absent from the current device list are shown by ID. Unselected existing entities are disabled, preserving their IDs and customizations.",
+        "data": {
+          "entity_filter_mode": "Entity filter mode",
+          "entity_ids": "Entities"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid account credentials",
+      "cannot_connect": "Unable to connect to Rinnai. Please try again.",
+      "invalid_selection": "The selection contains unknown items. Please select again."
+    },
+    "abort": {
+      "no_devices": "No devices were found on this account."
     }
+  },
+  "options": {
+    "step": {
+      "devices": {
+        "title": "Select devices",
+        "description": "Include imports only the checked devices. Exclude imports every device except the checked ones, including devices added to the account later. An empty Include list imports nothing; an empty Exclude list imports everything.",
+        "data": {
+          "device_filter_mode": "Device filter mode",
+          "device_ids": "Devices"
+        }
+      },
+      "entities": {
+        "title": "Select entities",
+        "description": "Choose individual functions for the selected devices. Include imports only checked entities; Exclude imports all except checked entities. Empty Include means none; empty Exclude means all. Saved choices absent from the current device list are shown by ID. Unselected existing entities are disabled, preserving their IDs and customizations.",
+        "data": {
+          "entity_filter_mode": "Entity filter mode",
+          "entity_ids": "Entities"
+        }
+      }
+    },
+    "error": {
+      "invalid_selection": "The selection contains unknown items. Please select again."
+    },
+    "abort": {
+      "invalid_auth": "Invalid account credentials",
+      "cannot_connect": "Unable to connect to Rinnai. Please try again."
+    }
+  },
+  "selector": {
+    "filter_mode": {
+      "options": {
+        "include": "Include selected items",
+        "exclude": "Exclude selected items"
+      }
+    }
+  }
 }

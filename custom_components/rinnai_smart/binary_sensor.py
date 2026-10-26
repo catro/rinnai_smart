@@ -5,6 +5,7 @@ from homeassistant.components.binary_sensor import BinarySensorEntity
 from .const import DOMAIN as RINNAI_DOMAIN, BINARY_SENSORS
 from .device import RinnaiDeviceDataUpdateCoordinator
 from .entity import RinnaiEntity
+from .filters import entity_selected
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -13,7 +14,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]["devices"]
     entities = []
     for device in devices:
-        entities.extend([RinnaiBinarySensor(sensor, device) for sensor in BINARY_SENSORS])
+        entities.extend(
+            RinnaiBinarySensor(sensor, device) for sensor in BINARY_SENSORS
+            if entity_selected(config_entry.options, device.id, sensor["entity_type"])
+        )
     async_add_entities(entities)
 
 

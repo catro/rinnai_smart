@@ -51,3 +51,47 @@ Please make sure to use one of the official release branches when installing usi
 > 1. Navigate to the Home Assistant Integrations page `(Settings --> Devices & Services)`
 > 2. Click the `+ ADD INTEGRATION` button in the lower right-hand corner
 > 3. Search for `Rinnai Smart`
+## Device and entity selection
+
+Setup validates your Rinnai Smart account, then shows two selection steps:
+
+1. **Devices:** choose heaters by their account name and MAC address. New setups
+   default to **Include** with all currently listed devices checked. Uncheck any
+   device you do not want to import. Later account additions are not automatically
+   imported in this mode.
+2. **Entities:** choose individual functions for each selected heater, such as
+   its water heater entity, burning sensor, or recirculation switch. This step
+   defaults to **Exclude** with no exclusions, importing all functions of the
+   selected devices.
+
+Both steps support **Include** (only checked items) and **Exclude** (all items
+except those checked). An empty Include list imports nothing; an empty Exclude
+list imports everything. Exclude mode also permits future items, subject to the
+other filter. Entity choices are per device and use stable unique IDs, so renaming
+an entity does not change its selection. Filtering a separate mode selector does
+not remove the operating-mode feature of the water heater entity.
+
+Use **Settings → Devices & services → Rinnai Smart → Configure** to change the
+selection later without entering credentials again. Save both steps to apply the
+changes; canceling leaves the previous selection intact. Saved choices temporarily
+absent from the account are retained and displayed by ID. The integration reloads
+on save and closes its previous MQTT connection before starting another.
+
+Existing entries without filter options retain the original import-all behavior.
+Unselected devices (or devices with no selected entities) receive no state-detail
+requests or MQTT subscriptions. The cloud account's device list is still needed
+for discovery. An intentionally empty selection is valid and does not start MQTT.
+
+Previously created entities that are excluded become **disabled by the
+integration**. Their registry records, IDs, custom names, and device records are
+retained. Selecting them again restores them; entities you manually disabled remain
+disabled. Existing dashboard cards or automations referencing an excluded entity
+must be adjusted separately.
+
+## Development tests
+
+With Python 3.14, install `requirements_test.txt` into a virtual environment, then
+run `python -m pytest -q --disable-socket --allow-unix-socket`. The tests use
+synthetic device data and mocked HTTP/MQTT transports, including Home Assistant's
+flow manager, platform setup, entity registry, and options reload. They do not
+contact Rinnai or control a physical heater.

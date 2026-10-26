@@ -5,6 +5,7 @@ from homeassistant.components.text import TextEntity, TextMode
 from .const import DOMAIN as RINNAI_DOMAIN, TEXTS
 from .device import RinnaiDeviceDataUpdateCoordinator
 from .entity import RinnaiEntity
+from .filters import entity_selected
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -14,7 +15,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]["devices"]
     entities = []
     for device in devices:
-        entities.extend([RinnaiText(text, device) for text in TEXTS])
+        entities.extend(
+            RinnaiText(text, device) for text in TEXTS
+            if entity_selected(config_entry.options, device.id, text["entity_type"])
+        )
     async_add_entities(entities)
 
 

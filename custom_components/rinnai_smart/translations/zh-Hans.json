@@ -1,0 +1,72 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "登录林内智家",
+        "data": {
+          "username": "账号",
+          "password": "密码"
+        }
+      },
+      "devices": {
+        "title": "选择设备",
+        "description": "包含：仅接入勾选的设备。排除：接入勾选设备以外的全部设备（含账号以后新增的设备）。包含列表留空表示不接入任何设备；排除列表留空表示全部接入。暂时不在云端列表中的已保存选择以 ID 显示。",
+        "data": {
+          "device_filter_mode": "设备筛选方式",
+          "device_ids": "设备"
+        }
+      },
+      "entities": {
+        "title": "选择功能实体",
+        "description": "为选中的设备选择具体功能。包含：仅接入勾选的实体；排除：接入其余全部实体。包含列表留空表示全部不接入；排除列表留空表示全部接入。已保存但当前不在设备列表中的选项以 ID 显示。取消选择的既有实体会禁用保留，重新选中后恢复；手动禁用的实体不会自动启用。",
+        "data": {
+          "entity_filter_mode": "实体筛选方式",
+          "entity_ids": "功能实体"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "账号或密码无效",
+      "cannot_connect": "无法连接林内服务，请稍后重试",
+      "invalid_selection": "选择中包含未知项，请重新选择"
+    },
+    "abort": {
+      "no_devices": "账号下没有设备"
+    }
+  },
+  "options": {
+    "step": {
+      "devices": {
+        "title": "选择设备",
+        "description": "包含：仅接入勾选的设备。排除：接入勾选设备以外的全部设备（含账号以后新增的设备）。包含列表留空表示不接入任何设备；排除列表留空表示全部接入。暂时不在云端列表中的已保存选择以 ID 显示。",
+        "data": {
+          "device_filter_mode": "设备筛选方式",
+          "device_ids": "设备"
+        }
+      },
+      "entities": {
+        "title": "选择功能实体",
+        "description": "为选中的设备选择具体功能。包含：仅接入勾选的实体；排除：接入其余全部实体。包含列表留空表示全部不接入；排除列表留空表示全部接入。已保存但当前不在设备列表中的选项以 ID 显示。取消选择的既有实体会禁用保留，重新选中后恢复；手动禁用的实体不会自动启用。",
+        "data": {
+          "entity_filter_mode": "实体筛选方式",
+          "entity_ids": "功能实体"
+        }
+      }
+    },
+    "error": {
+      "invalid_selection": "选择中包含未知项，请重新选择"
+    },
+    "abort": {
+      "invalid_auth": "账号或密码无效",
+      "cannot_connect": "无法连接林内服务，请稍后重试"
+    }
+  },
+  "selector": {
+    "filter_mode": {
+      "options": {
+        "include": "包含所选项",
+        "exclude": "排除所选项"
+      }
+    }
+  }
+}

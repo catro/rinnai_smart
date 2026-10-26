@@ -5,6 +5,7 @@ from homeassistant.components.select import SelectEntity
 from .const import DOMAIN, SELECTS, OPERATION_MAP
 from .device import RinnaiDeviceDataUpdateCoordinator
 from .entity import RinnaiEntity
+from .filters import entity_selected
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -13,7 +14,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ]["devices"]
     entities = []
     for device in devices:
-        entities.extend([RinnaiSelect(select, device) for select in SELECTS])
+        entities.extend(
+            RinnaiSelect(select, device) for select in SELECTS
+            if entity_selected(config_entry.options, device.id, select["entity_type"])
+        )
     async_add_entities(entities)
 
 

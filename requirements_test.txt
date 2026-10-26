@@ -1,0 +1,4 @@
+pytest-homeassistant-custom-component==0.13.372
+aiomqtt>=2.0.0
+backoff==2.2.1
+ruff==0.15.12
