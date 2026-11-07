@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from homeassistant.components.water_heater import (
-    PRECISION_WHOLE,
     WaterHeaterEntity,
     WaterHeaterEntityFeature,
     ATTR_TEMPERATURE,
 )
-from homeassistant.const import UnitOfTemperature
+from homeassistant.const import PRECISION_WHOLE, UnitOfTemperature
 
 from .const import DOMAIN, OPERATION_MAP, WATER_HEATER, MIN_TEMP, MAX_TEMP, LOGGER
 from .device import RinnaiDeviceDataUpdateCoordinator
